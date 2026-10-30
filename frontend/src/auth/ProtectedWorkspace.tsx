@@ -76,6 +76,7 @@ export function ProtectedWorkspace({ onSignOut }: { onSignOut: () => void }) {
         <span className="workspace-label">SIGNED IN AS</span>
         <strong>{profile?.email ?? user?.email}</strong>
         <p>Your authenticated workspace is ready. Your profile is stored securely for your account.</p>
+        <a className="workspace-assessments-link" href="/assessments">Explore assessments ↗</a>
       </section>
       <section className="profile-card" aria-labelledby="profile-heading">
         <p className="workspace-label">YOUR PROFILE</p>

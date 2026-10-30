@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
 import { DepartmentDirectory } from './components/DepartmentDirectory'
+import { AssessmentDirectory } from './components/AssessmentDirectory'
+import { AssessmentAuthState, AssessmentIntroduction } from './components/AssessmentIntroduction'
 import { AuthPage } from './auth/AuthPage'
 import { ProtectedWorkspace } from './auth/ProtectedWorkspace'
 import { useAuth } from './auth/AuthProvider'
@@ -22,6 +24,9 @@ function App() {
   }, [])
 
   const isDepartmentsPage = path === '/departments'
+  const isAssessmentsPage = path === '/assessments'
+  const isAssessmentDetailPage = path.startsWith('/assessments/') && path.length > '/assessments/'.length
+  const assessmentSlug = isAssessmentDetailPage ? path.slice('/assessments/'.length) : ''
   const isAuthPage = path === '/auth'
   const isWorkspacePage = path === '/workspace'
 
@@ -31,6 +36,10 @@ function App() {
 
   function navigateToAuth() {
     navigateTo(user ? '/workspace' : '/auth')
+  }
+
+  function navigateToAssessments() {
+    navigateTo('/assessments')
   }
 
   return (
@@ -43,6 +52,7 @@ function App() {
         <div className="nav-links">
           <a href="/#experience">The experience</a>
           <a href="/departments" onClick={(event) => { event.preventDefault(); navigateTo('/departments') }}>Departments</a>
+          <a href="/assessments" onClick={(event) => { event.preventDefault(); navigateToAssessments() }}>Assessments</a>
           <a href="/#about">About</a>
         </div>
         <a className="nav-action" href={user ? '/workspace' : '/auth'} onClick={(event) => { event.preventDefault(); navigateToAuth() }}>
@@ -53,6 +63,12 @@ function App() {
       {isAuthPage ? <AuthPage onAuthenticated={() => navigateTo('/workspace')} /> : isWorkspacePage ? (
         isLoading ? <main className="route-loading" role="status">Checking your session...</main>
           : user ? <ProtectedWorkspace onSignOut={() => navigateTo('/auth')} /> : null
+      ) : isAssessmentsPage || isAssessmentDetailPage ? (
+        isLoading ? <main className="route-loading" role="status">Checking your session...</main>
+          : user ? isAssessmentDetailPage
+            ? <AssessmentIntroduction onBack={navigateToAssessments} slug={decodeURIComponent(assessmentSlug)} />
+            : <AssessmentDirectory onSelect={(slug) => navigateTo(`/assessments/${encodeURIComponent(slug)}`)} />
+            : <AssessmentAuthState onSignIn={() => navigateTo('/auth')} />
       ) : isDepartmentsPage ? <DepartmentDirectory /> : (
         <main>
           <section className="hero" id="experience">
