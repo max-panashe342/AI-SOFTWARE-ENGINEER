@@ -36,3 +36,48 @@ class ProfileResponse(BaseModel):
     display_name: str | None
     created_at: datetime
     updated_at: datetime
+
+
+class CompetencyResponse(BaseModel):
+    id: int
+    name: str
+    slug: str
+    description: str
+
+
+class AssessmentListItemResponse(BaseModel):
+    id: int
+    slug: str
+    name: str
+    description: str
+    department_name: str
+    version: int
+
+
+class AssessmentQuestionResponse(BaseModel):
+    id: int
+    position: int
+    type: str
+    prompt: str
+    instructions: str | None
+    starter_code: str | None
+    language: str | None
+    max_score: int
+    competency: CompetencyResponse
+
+
+class AssessmentVersionResponse(BaseModel):
+    id: int
+    version_number: int
+    instructions: str
+    time_limit_minutes: int | None
+    questions: list[AssessmentQuestionResponse]
+
+
+class AssessmentDetailResponse(BaseModel):
+    id: int
+    slug: str
+    name: str
+    description: str
+    department_name: str
+    version: AssessmentVersionResponse

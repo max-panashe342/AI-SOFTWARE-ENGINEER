@@ -66,3 +66,23 @@ VITE_API_BASE_URL=http://localhost:8000
 
 Open `http://localhost:5173` and choose **Departments**, or open
 `http://localhost:5173/departments` directly.
+
+## Assessment definitions
+
+The first Milestone 2 assessment definition is available through:
+
+```text
+GET /api/assessments
+GET /api/assessments/frontend-engineering-foundations
+```
+
+Assessment versions are published independently from their assessment identity,
+and questions reference explicit competencies. Candidate attempts, submitted
+work, evaluation results, and placement recommendations are separate future
+milestones.
+
+The assessment records intentionally do not assign work to AI agents yet. Future
+agent roles must use controlled backend services, have explicit permissions,
+record whether an action was performed by an agent or a user, and preserve
+evidence provenance. AI-generated work must remain distinguishable from a
+candidate's independent demonstration.

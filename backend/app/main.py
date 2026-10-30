@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from app.database import initialize_database
 from app.routers.departments import router as departments_router
 from app.routers.profile import router as profile_router
+from app.routers.assessments import router as assessments_router
 
 app = FastAPI()
 
@@ -17,6 +18,7 @@ app.add_middleware(
 
 app.include_router(departments_router)
 app.include_router(profile_router)
+app.include_router(assessments_router)
 
 
 @app.on_event("startup")
