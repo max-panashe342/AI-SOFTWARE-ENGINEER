@@ -1,9 +1,42 @@
+# Python environments and caches
 .venv/
 venv/
 env/
 ENV/
 __pycache__/
+**/__pycache__/
 *.py[cod]
+*.pyo
+
+# Environment-specific configuration
 .env
 .env.*
 !.env.example
+
+# JavaScript dependencies and build output
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+
+# Local databases and logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Local editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
