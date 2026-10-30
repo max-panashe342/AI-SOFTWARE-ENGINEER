@@ -1,0 +1,10 @@
+.workspace-page { min-height: calc(100vh - 180px); padding: 82px 0 100px; }
+.workspace-header { align-items: end; display: flex; justify-content: space-between; }
+.workspace-header h1 { margin: 0; }
+.workspace-signout { background: transparent; border: 1px solid var(--line); color: var(--ink); cursor: pointer; font: 700 11px 'Manrope', sans-serif; padding: 13px 18px; }
+.workspace-signout:hover { background: var(--ink); color: var(--paper); }
+.workspace-card { background: #e8edd3; margin-top: 68px; max-width: 540px; padding: 30px; }
+.workspace-label { color: #70802e; display: block; font: 9px 'DM Mono', monospace; letter-spacing: .12em; margin-bottom: 16px; }
+.workspace-card strong { display: block; font-size: 20px; overflow-wrap: anywhere; }
+.workspace-card p { color: var(--muted); font-size: 13px; line-height: 1.7; margin: 16px 0 0; }
+@media (max-width: 700px) { .workspace-page { padding: 55px 0 70px; } .workspace-header { align-items: start; display: block; } .workspace-signout { margin-top: 30px; } }

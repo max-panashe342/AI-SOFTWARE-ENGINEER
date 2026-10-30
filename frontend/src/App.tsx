@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { DepartmentDirectory } from './components/DepartmentDirectory'
+import { AuthPage } from './auth/AuthPage'
+import { ProtectedWorkspace } from './auth/ProtectedWorkspace'
+import { useAuth } from './auth/AuthProvider'
 import './App.css'
 
 function navigateTo(path: string) {
@@ -10,6 +13,7 @@ function navigateTo(path: string) {
 
 function App() {
   const [path, setPath] = useState(window.location.pathname)
+  const { user, isLoading } = useAuth()
 
   useEffect(() => {
     const handlePopState = () => setPath(window.location.pathname)
@@ -18,6 +22,16 @@ function App() {
   }, [])
 
   const isDepartmentsPage = path === '/departments'
+  const isAuthPage = path === '/auth'
+  const isWorkspacePage = path === '/workspace'
+
+  useEffect(() => {
+    if (!isLoading && isWorkspacePage && !user) navigateTo('/auth')
+  }, [isLoading, isWorkspacePage, user])
+
+  function navigateToAuth() {
+    navigateTo(user ? '/workspace' : '/auth')
+  }
 
   return (
     <div className="app-shell">
@@ -31,12 +45,15 @@ function App() {
           <a href="/departments" onClick={(event) => { event.preventDefault(); navigateTo('/departments') }}>Departments</a>
           <a href="/#about">About</a>
         </div>
-        <a className="nav-action" href="/departments" onClick={(event) => { event.preventDefault(); navigateTo('/departments') }}>
-          Get started <span aria-hidden="true">↗</span>
+        <a className="nav-action" href={user ? '/workspace' : '/auth'} onClick={(event) => { event.preventDefault(); navigateToAuth() }}>
+          {user ? 'Workspace' : 'Get started'} <span aria-hidden="true">↗</span>
         </a>
       </nav>
 
-      {isDepartmentsPage ? <DepartmentDirectory /> : (
+      {isAuthPage ? <AuthPage onAuthenticated={() => navigateTo('/workspace')} /> : isWorkspacePage ? (
+        isLoading ? <main className="route-loading" role="status">Checking your session...</main>
+          : user ? <ProtectedWorkspace onSignOut={() => navigateTo('/auth')} /> : null
+      ) : isDepartmentsPage ? <DepartmentDirectory /> : (
         <main>
           <section className="hero" id="experience">
             <div className="hero-copy">
