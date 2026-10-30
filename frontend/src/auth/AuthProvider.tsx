@@ -66,7 +66,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     signUp: async (email, password) => {
       if (!supabase) return { needsConfirmation: false, error: supabaseConfigError }
-      const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/workspace`,
+        },
+      })
       if (signUpError) {
         const message = getErrorMessage(signUpError)
         setError(message)
