@@ -25,6 +25,29 @@ GET /api/departments
 The API allows requests from the local Vite development origins
 `http://localhost:5173` and `http://127.0.0.1:5173`.
 
+## Authenticated profile API
+
+The backend profile endpoints verify the Supabase access token with the
+Supabase Auth user endpoint. No service-role key is used. Copy the empty
+placeholders in `backend/.env` and set them locally with the public Supabase
+project URL and publishable key before using authenticated profile requests:
+
+```text
+SUPABASE_URL=
+SUPABASE_PUBLISHABLE_KEY=
+```
+
+The protected endpoints are:
+
+```text
+GET /api/me
+PATCH /api/me
+```
+
+The authenticated Supabase user UUID comes from the verified bearer token, not
+from request body or query parameters. The first `GET /api/me` creates that
+user's profile record; subsequent requests reuse it.
+
 ## Frontend API configuration
 
 From `frontend`, start Vite:

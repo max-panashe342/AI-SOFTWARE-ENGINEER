@@ -25,7 +25,7 @@ def get_db() -> Generator[Session, None, None]:
 
 
 def initialize_database() -> None:
-    from app.models import Department
+    from app.models import Department, UserProfile
 
     Base.metadata.create_all(bind=engine)
     with SessionLocal() as session:
