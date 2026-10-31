@@ -1,17 +1,36 @@
 from collections.abc import Generator
+import os
 from pathlib import Path
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
-DATABASE_PATH = Path(__file__).resolve().parent.parent / "data" / "engineering_workplace.db"
-DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
-DATABASE_URL = f"sqlite:///{DATABASE_PATH.as_posix()}"
+DEFAULT_DATABASE_PATH = Path(__file__).resolve().parent.parent / "data" / "engineering_workplace.db"
+DEFAULT_DATABASE_URL = f"sqlite:///{DEFAULT_DATABASE_PATH.as_posix()}"
+DATABASE_URL = os.environ.get("AI_ERA_DATABASE_URL", DEFAULT_DATABASE_URL)
+
+if DATABASE_URL.startswith("sqlite:///") and ":memory:" not in DATABASE_URL:
+    database_path = Path(DATABASE_URL.removeprefix("sqlite:///"))
+    database_path.parent.mkdir(parents=True, exist_ok=True)
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False},
+    connect_args={
+        "check_same_thread": False,
+        **({"timeout": 5.0} if DATABASE_URL.startswith("sqlite:") else {}),
+    },
 )
+
+if engine.dialect.name == "sqlite":
+    @event.listens_for(engine, "connect")
+    def enable_sqlite_foreign_keys(dbapi_connection, _connection_record) -> None:
+        cursor = dbapi_connection.cursor()
+        try:
+            cursor.execute("PRAGMA foreign_keys=ON")
+        finally:
+            cursor.close()
+
+
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 
@@ -24,7 +43,7 @@ def get_db() -> Generator[Session, None, None]:
         yield session
 
 
-def initialize_database() -> None:
+def seed_initial_data() -> None:
     from datetime import datetime, timezone
 
     from app.models import (
@@ -36,7 +55,6 @@ def initialize_database() -> None:
         UserProfile,
     )
 
-    Base.metadata.create_all(bind=engine)
     with SessionLocal() as session:
         if session.query(Department).filter_by(slug="frontend-engineering").first() is None:
             session.add(
